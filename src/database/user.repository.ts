@@ -8,23 +8,30 @@ export class UserRepository {
   constructor(@InjectEntityManager() private readonly entityManager: EntityManager) {}
 
   async findAll(): Promise<User[]> {
-    const query = this.entityManager.createQuery('SELECT u FROM User u');
-    return await query.getResultList();
+    const query = this.entityManager.createQueryBuilder().select('u').from(User, 'u');
+    return await query.getMany();
+    // const query = this.entityManager.createQuery('SELECT u FROM User u');
+    // return await query.getResultList();
   }
 
-  async findById(id: string): Promise<User> {
-    return await this.entityManager.findOne(User, Number(id));
+  async findById(id: string, user: User): Promise<User> {
+    const userToUpdate = await this.entityManager.findOne(User, id);
+    if (!userToUpdate) {
+      throw new Error(`User with id ${id} not found`);
+    }
+    Object.assign(userToUpdate, user);
+    return await this.entityManager.save(userToUpdate);
   }
 
   async create(user: User): Promise<User> {
     return await this.entityManager.save(user);
   }
 
-  async update(user: User): Promise<User> {
+  async update(id: string, user: User): Promise<User> {
     return await this.entityManager.save(user);
   }
 
-  async delete(id: number): Promise<void> {
+  async delete(id: string): Promise<void> {
     await this.entityManager.delete(User, id);
   }
 }

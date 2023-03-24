@@ -12,7 +12,7 @@ export class UserController {
   }
 
   @Get(':id')
-  async findById(@Param('id') id: number): Promise<User> {
+  async findById(@Param('id') id: string): Promise<User> {
     return this.userService.findById(id);
   }
 
@@ -22,12 +22,12 @@ export class UserController {
   }
 
   @Put(':id')
-  async update(@Param('i') id: number, @Body() user: User): Promise<User> {
+  async update(@Param('i') id: string, @Body() user: User): Promise<User> {
 return this.userService.update(id, user);
 }
 
 @Delete(':id')
-async delete(@Param('id') id: number): Promise<void> {
+async delete(@Param('id') id: string): Promise<void> {
 return this.userService.delete(id);
 }
 }
